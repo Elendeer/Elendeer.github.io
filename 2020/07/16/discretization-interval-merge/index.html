@@ -6,14 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives | Daniel_Elendeer&#39;s Blog</title>
+  <title>discretization&amp;interval_merge | Daniel_Elendeer&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Daniel_Elendeer&#39;s Blog">
-<meta property="og:url" content="http://yoursite.com/archives/index.html">
+  <meta name="description" content="这段时间噬月在进行算法的复习和学习！ 这篇博客将包括离散化和区间合并。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="discretization&amp;interval_merge">
+<meta property="og:url" content="http://yoursite.com/2020/07/16/discretization-interval-merge/index.html">
 <meta property="og:site_name" content="Daniel_Elendeer&#39;s Blog">
+<meta property="og:description" content="这段时间噬月在进行算法的复习和学习！ 这篇博客将包括离散化和区间合并。">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-07-16T13:56:24.000Z">
+<meta property="article:modified_time" content="2020-07-17T12:46:11.546Z">
 <meta property="article:author" content="Daniel_Elendeer">
+<meta property="article:tag" content="algorithm">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="Daniel_Elendeer&#39;s Blog" type="application/atom+xml">
@@ -146,36 +151,102 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-discretization-interval-merge" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      discretization&amp;interval_merge
+    </h1>
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2020" class="archive-year">2020</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/07/16/discretization-interval-merge/" class="archive-article-date">
+
+        
+        <a href="/2020/07/16/discretization-interval-merge/" class="archive-article-date">
   	<time datetime="2020-07-16T13:56:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-16</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/07/16/discretization-interval-merge/">discretization&amp;interval_merge</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>这段时间噬月在进行算法的复习和学习！</p>
+<p>这篇博客将包括离散化和区间合并。</p>
+<a id="more"></a>
 
-        <div class="article-info info-on-right">
-          
+<p>本篇算法模板来自AcWing的y总。</p>
+<h2 id="离散化"><a href="#离散化" class="headerlink" title="离散化"></a>离散化</h2><p>先说是什么：</p>
+<p>考虑一个这样的问题：有一个无限长的数组，元素初始值都为0，现在在上面随机插入5个数，然后随机询问一个区间$[i, j]$，我们需要回答出该区间中所有元素的和。我们应该怎么做？</p>
+<p>这个数组是无限长的，我们总不能真开个无限长的数组吧？否则内存可能直接现场爆炸以抒发激动之情。那怎么办？我们会发现，尽管这个数组是无限长的，但我们从头到尾用到的坐标最多只有7个，分别是5个元素和两个区间坐标（如果询问的坐标恰好在插入元素时使用过，那就会更少），其他的坐标上的元素，初始值是零，显然对求和没有影响。那么我们就可以考虑，<em>先读入所有用得到的坐标，然后令这些坐标根据大小排序（使得其原来在数轴上的大小顺序不变），然后将这些坐标依次映射到一个短数组上</em>。当无限长的、元素稀疏的数组变为短的、元素密集数组时，这个问题的解法就很明了了——使用我们讨论过的<strong>前缀和</strong>算法（公式）就可以了。<em>而以上做映射的过程，就称为离散化</em>。</p>
+<p><strong>离散化是映射的过程</strong>，这里只讨论整数的有序离散化。假如我们有一个数组a，把数组a元素映射到另一个数组的下标上的过程，就是离散化。</p>
+<p>此过程中涉及到的两个问题：</p>
+<ol>
+<li>a中有重复元素怎么办？<br> 答：<strong>去重</strong>。（不去重在有的题目中并不影响正确性，但一般去重之后，后续的处理效率会比较高</li>
+<li>如何算出<code>a[i]</code>离散化后的值？<br> 答：<strong>二分</strong>求得下标即可。（当然，直接遍历也不是不行，但有序数组显然二分比较快</li>
+</ol>
+<p>有一个求<a href="https://www.acwing.com/problem/content/804/" target="_blank" rel="noopener">区间和</a>的题，可以比较好的理解这个过程。</p>
+<p>解法如下</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; PII;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">300010</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> n, m;</span><br><span class="line"><span class="keyword">int</span> a[N], s[N];</span><br><span class="line"></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; alls;</span><br><span class="line"><span class="built_in">vector</span>&lt;PII&gt; add, query;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> l = <span class="number">0</span>, r = alls.size() - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (l &lt; r)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> mid = l + r &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (alls[mid] &gt;= x) r = mid;</span><br><span class="line">        <span class="keyword">else</span> l = mid + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> r + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;::<span class="function">iterator <span class="title">unique</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;a)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> j = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; a.size(); i ++ )</span><br><span class="line">        <span class="keyword">if</span> (!i || a[i] != a[i - <span class="number">1</span>])</span><br><span class="line">            a[j ++ ] = a[i];</span><br><span class="line">    <span class="comment">// a[0] ~ a[j - 1] 所有a中不重复的数</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> a.begin() + j;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i ++ )</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> x, c;</span><br><span class="line">        <span class="built_in">cin</span> &gt;&gt; x &gt;&gt; c;</span><br><span class="line">        add.push_back(&#123;x, c&#125;);</span><br><span class="line"></span><br><span class="line">        alls.push_back(x);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m; i ++ )</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> l, r;</span><br><span class="line">        <span class="built_in">cin</span> &gt;&gt; l &gt;&gt; r;</span><br><span class="line">        query.push_back(&#123;l, r&#125;);</span><br><span class="line"></span><br><span class="line">        alls.push_back(l);</span><br><span class="line">        alls.push_back(r);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 去重</span></span><br><span class="line">    sort(alls.begin(), alls.end());</span><br><span class="line">    alls.erase(unique(alls), alls.end());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 处理插入</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> item : add)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> x = find(item.first);</span><br><span class="line">        a[x] += item.second;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 预处理前缀和</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= alls.size(); i ++ ) s[i] = s[i - <span class="number">1</span>] + a[i];</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 处理询问</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> item : query)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> l = find(item.first), r = find(item.second);</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; s[r] - s[l - <span class="number">1</span>] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面的解法中的去重涉及了一些stl的操作，这是C++中去重的常用写法，推荐记住。<code>unique</code>函数将把容器内不同的元素排到容器前，并返回容器内这些排完之后的不同元素序列的超尾迭代器。</p>
+<p>也可以自行实现如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;::<span class="function">iterator <span class="title">unique</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;a)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> j = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; a.size(); i ++ )</span><br><span class="line">        <span class="keyword">if</span> (!i || a[i] != a[i - <span class="number">1</span>])</span><br><span class="line">            a[j ++ ] = a[i];</span><br><span class="line">    <span class="comment">// a[0] ~ a[j - 1] 所有a中不重复的数</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> a.begin() + j;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>题解中的<code>find</code>函数可以复习到二分查找，离散化过后的解题方法又可以复习到前缀和，如果要手写<code>unique</code>函数的话，也可以涉及到双指针算法，可以说是一道比较好的入门综合题。</p>
+<h2 id="区间合并"><a href="#区间合并" class="headerlink" title="区间合并"></a>区间合并</h2><p>区间合并理解起来很简单，一言以蔽之，就是给我们一堆区间，让我们把其中有交集的合并成一个大的区间。</p>
+<p>方法也十分直白：将所给的区间按照左端点排序，依次维护区间。观察下一个区间与当前区间的关系，关系有三种：</p>
+<ol>
+<li>含于当前维护的区间，这种情况下不操作；</li>
+<li>右端点在当前维护区间外，左端点在当前维护区间内，有交集。这种情况下更新维护区间的右端点为下一个区间的右端点；</li>
+<li>下一个区间的左端点在当前维护区间外，无交集；由于预先的排序，这种情况下已经可以将当前维护区间加入答案。</li>
+</ol>
+<p><em>注：由于有预先排序，因此不会出现下一个区间包含当前维护区间的情况，或者右端点在当前维护区间内而左端点在外的情况。</em></p>
+<p>Acwing上的<a href="https://www.acwing.com/problem/content/805/" target="_blank" rel="noopener">区间合并</a>题目。</p>
+<p>题解如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; PII;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">merge</span><span class="params">(<span class="built_in">vector</span>&lt;PII&gt; &amp;segs)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">vector</span>&lt;PII&gt; res;</span><br><span class="line"></span><br><span class="line">    sort(segs.begin(), segs.end());</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> st = <span class="number">-2e9</span>, ed = <span class="number">-2e9</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> seg : segs)</span><br><span class="line">        <span class="keyword">if</span> (ed &lt; seg.first)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (st != <span class="number">-2e9</span>) res.push_back(&#123;st, ed&#125;);</span><br><span class="line">            st = seg.first, ed = seg.second;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> ed = max(ed, seg.second);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (st != <span class="number">-2e9</span>) res.push_back(&#123;st, ed&#125;);</span><br><span class="line"></span><br><span class="line">    segs = res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d"</span>, &amp;n);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">vector</span>&lt;PII&gt; segs;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i ++ )</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> l, r;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%d%d"</span>, &amp;l, &amp;r);</span><br><span class="line">        segs.push_back(&#123;l, r&#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    merge(segs);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; segs.size() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面是y总的写法，但我觉得设置初始维护区间为第一个区间会在思维上更直观一点，下面是我的代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; PII;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">merge</span><span class="params">(<span class="built_in">vector</span>&lt;PII&gt;&amp; segs)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (segs.empty()) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">vector</span>&lt;PII&gt; res;</span><br><span class="line"></span><br><span class="line">    sort(segs.begin(), segs.end());</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> st = segs.front().first, ed = segs.front().second;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; segs.size(); ++ i ) &#123;</span><br><span class="line">        <span class="keyword">if</span> (ed &lt; segs[i].first) &#123;</span><br><span class="line">            res.push_back(&#123;st, ed&#125;);</span><br><span class="line">            st = segs[i].first, ed = segs[i].second;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            ed = max(ed, segs[i].second);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    res.push_back(&#123;st, ed&#125;);</span><br><span class="line">    segs = res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">vector</span>&lt;PII&gt; segs;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; n;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++ i ) &#123;</span><br><span class="line">        <span class="keyword">int</span> l, r;</span><br><span class="line">        <span class="built_in">cin</span> &gt;&gt; l &gt;&gt; r;</span><br><span class="line"></span><br><span class="line">        segs.push_back(&#123;l, r&#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    merge(segs);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; segs.size() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="https://cdn.luogu.com.cn/upload/image_hosting/jjee5dmc.png?x-oss-process=image/resize,m_lfit,h_170,w_225">
+                      <span class="reward-type">支付宝</span>
+                    </div>
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="https://cdn.luogu.com.cn/upload/image_hosting/lphudc6j.png?x-oss-process=image/resize,m_lfit,h_170,w_225">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -187,236 +258,106 @@
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2020/07/16/discretization-interval-merge/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/07/16/double_pointer&bit_operation/" class="archive-article-date">
-  	<time datetime="2020-07-16T01:19:19.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-16</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2020/07/16/double_pointer&bit_operation/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">double_pointer&amp;bit_operation</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/07/16/double_pointer&bit_operation/">double_pointer&amp;bit_operation</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">algorithm</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/07/12/%E5%89%8D%E7%BC%80%E5%92%8C%E4%B8%8E%E5%B7%AE%E5%88%86%E7%AE%97%E6%B3%95/" class="archive-article-date">
-  	<time datetime="2020-07-12T13:37:49.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-12</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/07/12/%E5%89%8D%E7%BC%80%E5%92%8C%E4%B8%8E%E5%B7%AE%E5%88%86%E7%AE%97%E6%B3%95/">前缀和与差分算法</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">algorithm</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/07/12/high-accuracy/" class="archive-article-date">
-  	<time datetime="2020-07-12T12:24:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-12</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/07/12/high-accuracy/">high_accuracy</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">algorithm</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/07/11/dichotomy/" class="archive-article-date">
-  	<time datetime="2020-07-11T13:10:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-11</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/07/11/dichotomy/">dichotomy</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">algorithm</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/07/08/sort/" class="archive-article-date">
-  	<time datetime="2020-07-08T10:46:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-08</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/07/08/sort/">sort</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">algorithm</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/07/08/%E7%A2%91/" class="archive-article-date">
-  	<time datetime="2020-07-08T09:35:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-08</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/07/08/%E7%A2%91/">碑</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
 
 
           </div>
@@ -439,8 +380,8 @@
 	var yiliaConfig = {
 		mathjax: true,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
