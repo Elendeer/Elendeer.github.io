@@ -15,15 +15,15 @@
 <meta property="og:site_name" content="Daniel_Elendeer&#39;s Blog">
 <meta property="og:description" content="这段时间噬月在进行数据结构和算法的复习和学习！ 这篇博客将包括广为人知的KMP算法以及关于其思路的讨论。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://cdn.luogu.com.cn/upload/image_hosting/qpwdmub6.png">
-<meta property="og:image" content="https://cdn.luogu.com.cn/upload/image_hosting/ztq5jf9n.png">
-<meta property="og:image" content="https://cdn.luogu.com.cn/upload/image_hosting/t08nr4xe.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/61586472/88277576-8e147700-cd13-11ea-9e98-00b8fdf2066b.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/61586472/88277578-8ead0d80-cd13-11ea-949e-5f4e3233a871.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/61586472/88277572-8c4ab380-cd13-11ea-88fc-4d3e05ab59dd.png">
 <meta property="article:published_time" content="2020-07-21T10:58:48.000Z">
-<meta property="article:modified_time" content="2020-07-23T10:21:25.915Z">
+<meta property="article:modified_time" content="2020-07-23T10:39:30.667Z">
 <meta property="article:author" content="Daniel_Elendeer">
 <meta property="article:tag" content="algorithm">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://cdn.luogu.com.cn/upload/image_hosting/qpwdmub6.png">
+<meta name="twitter:image" content="https://user-images.githubusercontent.com/61586472/88277576-8e147700-cd13-11ea-9e98-00b8fdf2066b.png">
   
     <link rel="alternative" href="/atom.xml" title="Daniel_Elendeer&#39;s Blog" type="application/atom+xml">
   
@@ -206,7 +206,7 @@
 <p>你可能想说：拉倒吧，我们用眼睛看，当然知道是无用功，程序怎么会知道它的第三个字符不匹配？又怎么会知道它需要一步跳到这里继续匹配？<del>你是写程序还是搞玄学？</del> 其实我想说，为了解释这种方法的可行性，我已经做了足够的铺垫描述：我们刚刚讨论过，<strong>任何局部匹配的字符串都是模板串的子串，而我们希望执行的这个最理想的跳转正是由这个已经匹配到的子串决定的</strong>——是否会做无用功，是否有漏掉可能的匹配，这个子串都可以作为标准来确定我们究竟要往前跳多少。而好消息是，我们早就知道了模板串是什么样子的——因此我们知道它的所有子串是什么样子的，这就给了我们机会来进行预处理，从而检索出模板串所有下标对应的理想跳转，从而在匹配字符串的时候达到最高效率。</p>
 <p>如果你能够透过我凌乱的描述，理解了这个方法的可行之处，那么恭喜你，你已经理解了KMP对暴力字符串匹配算法的核心优化点。</p>
 <p>现在问题来了：我们要如何找到这样的理想跳转？对于任何字符串s，当s与自己错开n格时，假设有前k个字符依然匹配，这意味着该字符串s中，$[1, k]$区间中的字符和$[n + 1, n + k]$区间中的字符完全相等。而又不难发现，$strlen(s) = n + k$，因此我们也可以这样说：这种情况下，<strong>字符串s中有一个长度为k的前缀和它的长度为k的后缀完全相等</strong>。</p>
-<p><img src="https://cdn.luogu.com.cn/upload/image_hosting/qpwdmub6.png" alt="可以画图辅助理解"></p>
+<p><img src="https://user-images.githubusercontent.com/61586472/88277576-8e147700-cd13-11ea-9e98-00b8fdf2066b.png" alt="可以画图辅助理解"></p>
 <p>因此我们需要求得一个数组<code>next</code>，<code>next[i] = j</code>表示在模式串s中，有一个以模式串开头小标为起始下标，以下标i为结尾下标的子串，<strong>这个子串中有一个长度为j的前缀和它的长度为j的后缀完全相等</strong>。</p>
 <p>而当我们的场景是匹配字符串时，我们希望错开的n尽量小，这样就不会漏掉任何可能匹配的字符串，因此<strong>这个前缀/后缀是最长的</strong>。</p>
 <p>到此为止，如果我们正确理解了这个数组的含义，并在读入字符串的时候令字符串下标从1开始，就不难理解KMP算法匹配模式串的过程：</p>
@@ -219,9 +219,9 @@
 <p>然后我就震惊地发现：这和KMP匹配模式串也太像了吧！然后我接着就乱了：这难道是在求<code>next</code>数组的时候也用了KMP？这不就递归了吗……</p>
 <p>希望你没有像我一样把自己搞晕——我们这就来理清求<code>next</code>数组的思路。</p>
 <p>由于我们的字符串都是从1开始储存的，那么我们就从下标1开始讨论。首先，<code>next[1] = 0</code>是显然的，当只有第一个字符匹配的时候，退无可退，我们只能从0开始重新匹配。而在接下来的匹配过程中，我们实际上要做这样一个事情：<strong>将模板串的开头和所有可能的子串结尾进行校对</strong>。为什么是模板串的开头呢？因为所有可能在匹配过程中出现的局部匹配子串，都只能是从头开始匹配，这是<del>废话</del>显然的。而模板串的所有位置显然都是可能的子串结尾——于是，我们就会手拿两个模板串做这样的事情：<em>把其中一根的开头对到另一根的开头上，依次校对过去，如果一直相等，就一直记录相等的字符数，因为这就是最长的相等的前/后缀；如果遇到了不相等的字符，就把下面的字符串往前挪，尝试校对出更短的相等的前/后</em>缀，看起来就像是：</p>
-<p><img src="https://cdn.luogu.com.cn/upload/image_hosting/ztq5jf9n.png" alt="校对过程"></p>
+<p><img src="https://user-images.githubusercontent.com/61586472/88277578-8ead0d80-cd13-11ea-949e-5f4e3233a871.png" alt="校对过程"></p>
 <p>确实很像！匹配过程中的每一次i自增，都会记录一次j，<strong>这个j就是当前找到的最大的相等前后缀的长度</strong>（如果<code>p[i] == p[j + 1]</code>始终成立，那么显然找到的j就是不断增加的，对于每一个以i结尾的子串来说，显然这样的j就是最大的）。假设在某一段匹配的过程中，字符始终相等（绿色框），那么i和j就会齐头并进，直到遇到不相等的字符（红色框）：</p>
-<p><img src="https://cdn.luogu.com.cn/upload/image_hosting/t08nr4xe.png" alt="校对过程"></p>
+<p><img src="https://user-images.githubusercontent.com/61586472/88277572-8c4ab380-cd13-11ea-88fc-4d3e05ab59dd.png" alt="校对过程"></p>
 <p>这时，i指向了上面的红色框，j则指向下面红色框前面的绿色框，我们实际上就找到了<code>ne[i] = j</code>这是不难理解的。接下来的情况十分面善：<strong>我们面临了一个跳转的问题</strong>，即j是要从0开始匹配，还是可以从某个更优的下标开始？我们可以观察到，我们已经确定了<code>next[1] = 0</code>，因此在开始匹配的时候，我们就令<code>i = 2</code>，而i只会自增，j则是不一定自增。<strong>i始终是领先j的，这意味着，对于匹配过程中的任何时刻，<code>ne[j]</code>都是已知的</strong>！因此才有了这个和匹配模式串时一模一样的<code>while</code>循环——这个循环能够出现，意味着我们<strong>在匹配的过程中也充分利用了已经求出的<code>next</code>数组</strong>，这真是十分优美巧妙。</p>
 <p>到此为止，KMP算法的思想和实现的步骤已经（凌乱地）讨论完毕了，我们可以借助代码再一次梳理一下。</p>
 <p>下面的代码同是是AcWing上<a href="https://www.acwing.com/problem/content/833/" target="_blank" rel="noopener">KMP字符串</a>的题解：</p>
