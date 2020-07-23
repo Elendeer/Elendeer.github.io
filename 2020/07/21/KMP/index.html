@@ -6,15 +6,24 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives | Daniel_Elendeer&#39;s Blog</title>
+  <title>KMP | Daniel_Elendeer&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Daniel_Elendeer&#39;s Blog">
-<meta property="og:url" content="http://yoursite.com/archives/index.html">
+  <meta name="description" content="这段时间噬月在进行数据结构和算法的复习和学习！ 这篇博客将包括广为人知的KMP算法以及关于其思路的讨论。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="KMP">
+<meta property="og:url" content="http://yoursite.com/2020/07/21/KMP/index.html">
 <meta property="og:site_name" content="Daniel_Elendeer&#39;s Blog">
+<meta property="og:description" content="这段时间噬月在进行数据结构和算法的复习和学习！ 这篇博客将包括广为人知的KMP算法以及关于其思路的讨论。">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.luogu.com.cn/upload/image_hosting/qpwdmub6.png">
+<meta property="og:image" content="https://cdn.luogu.com.cn/upload/image_hosting/ztq5jf9n.png">
+<meta property="og:image" content="https://cdn.luogu.com.cn/upload/image_hosting/t08nr4xe.png">
+<meta property="article:published_time" content="2020-07-21T10:58:48.000Z">
+<meta property="article:modified_time" content="2020-07-23T10:21:25.915Z">
 <meta property="article:author" content="Daniel_Elendeer">
+<meta property="article:tag" content="algorithm">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.luogu.com.cn/upload/image_hosting/qpwdmub6.png">
   
     <link rel="alternative" href="/atom.xml" title="Daniel_Elendeer&#39;s Blog" type="application/atom+xml">
   
@@ -146,36 +155,116 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-KMP" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      KMP
+    </h1>
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2020" class="archive-year">2020</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/07/21/KMP/" class="archive-article-date">
+
+        
+        <a href="/2020/07/21/KMP/" class="archive-article-date">
   	<time datetime="2020-07-21T10:58:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-21</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/07/21/KMP/">KMP</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>这段时间噬月在进行数据结构和算法的复习和学习！</p>
+<p>这篇博客将包括广为人知的KMP算法以及关于其思路的讨论。</p>
+<a id="more"></a>
 
-        <div class="article-info info-on-right">
-          
+<p>本篇算法模板来自AcWing的y总。</p>
+<p>本篇博客提到的字符串都从下标1开始储存。</p>
+<h2 id="KMP字符串匹配算法"><a href="#KMP字符串匹配算法" class="headerlink" title="KMP字符串匹配算法"></a>KMP字符串匹配算法</h2><p>考虑这样一个问题：给定一个长长的字符串，我们称为<strong>模式串</strong>，再给定一个（相对而言）短短的字符串，我们称为<strong>模板串</strong>。已知模板串在模式串中出现一次或多次，我们需要求出，模板串究竟出现过几次，以及每一次出现的起始坐标在哪里。</p>
+<p>刚看到这个问题的时候，噬月蒟蒻是大呼简单的，他（也就是我）抬手就写下了如下代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 假如模式串s长为n，模板串p长为m</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++ i ) &#123;</span><br><span class="line">    <span class="keyword">bool</span> flag = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; m; ++ j ) &#123;</span><br><span class="line">        <span class="keyword">if</span> (i + j &gt;= n || s[i + j] != p[j]) &#123;</span><br><span class="line">            flag = <span class="literal">false</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (flag) &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; i &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>噬月蒟蒻一度认为这个直观且暴力的解法属于优良题解，直到遇到了KMP算法，当然这是题外话。</p>
+<p>在此我们不妨看一下这个解法，思考一下它为什么被称为暴力的。惹眼的当然是不由分说的两重<code>for</code>循环嵌套，外层循环遍历了模式串，显然是枚举了其各个子串的起点；内层则遍历了模板串，与模式串的各个子串进行了比较。这种算法兢兢业业地枚举了每一个可能的起点，并尽可能匹配了每一个起点所能匹配到的最长匹配串——尽管这当中可能做了无用功。无用功在哪里？让我们来看一个例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">模式串 s : 111011000000001</span><br><span class="line">模板串 p : 1110111</span><br><span class="line"></span><br><span class="line">现在从头开始匹配：</span><br><span class="line">111011000000001</span><br><span class="line">1110111</span><br><span class="line">显然，匹配到模板串的第四个字符时就会停下并跳出</span><br><span class="line">——然后我们的暴力算法接下来会做什么呢？它会以这种姿势继续匹配：</span><br><span class="line">111011000000001</span><br><span class="line"> 1110111</span><br><span class="line">外层循环下标加1，然后继续匹配字符串。</span><br></pre></td></tr></table></figure>
+
+<p>就在这时，我们可以停下来仔细端详这个算法做的事情：在第一次匹配的过程中，它遍历过了两个字符串的前六个字符，发现全部匹配，而在发现第七个字符不匹配时，让内层循环终止，并让指向模式串的指针（不是真的指针，而是指外层循环的i）加一，而指向模板串的指针（不是真的指针，而是指内层循环的j）则从0开始重新匹配。看到这里也许你要说：这些道理我都懂，所以无用功在哪里？</p>
+<p>在这样问的时候，我们其实是没有意识到，局部的成功匹配实际上传达了更多的信息。匹配的过程是模板串在模式串中“发现自己”的过程，局部的成功匹配则意味着它“发现了局部的自己”。这实际上反映了，匹配的过程和模板串自身有很强的联系——这同时意味着，只要我们对模板串更加了解，就可以加速匹配的过程。这种定性的讲法十分玄乎而且没有说服力，我们不妨依然来看上面的例子，不过这次是更加一般的情况。</p>
+<p>假设在一个长长的字符串的匹配过程中我们发现了六个匹配的字符，并且在发现第七个字符不匹配之后令i加了1，接下来的情形在任何一个字符串中间，看起来像这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">...111011...</span><br><span class="line">    1110111</span><br></pre></td></tr></table></figure>
+
+<p>但我们可以发现，中间的0和1显然不可能匹配，<strong>让程序一步跳一格，去执行这种明知不匹配的情况，岂不是在做无用功</strong>？那它应该跳到哪里呢？我们希望它跳到一个位置，这个位置既不是傻乎乎的每次都前进一格：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">...111011...</span><br><span class="line">    1110111</span><br></pre></td></tr></table></figure>
+
+<p>也不是跳过了头导致漏掉了一些字符没有匹配到：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">...111011...</span><br><span class="line">        1110111</span><br></pre></td></tr></table></figure>
+
+<p>我们希望它最好一步到位，跳成这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">...111011...</span><br><span class="line">       1110111</span><br></pre></td></tr></table></figure>
+
+<p>你可能想说：拉倒吧，我们用眼睛看，当然知道是无用功，程序怎么会知道它的第三个字符不匹配？又怎么会知道它需要一步跳到这里继续匹配？<del>你是写程序还是搞玄学？</del> 其实我想说，为了解释这种方法的可行性，我已经做了足够的铺垫描述：我们刚刚讨论过，<strong>任何局部匹配的字符串都是模板串的子串，而我们希望执行的这个最理想的跳转正是由这个已经匹配到的子串决定的</strong>——是否会做无用功，是否有漏掉可能的匹配，这个子串都可以作为标准来确定我们究竟要往前跳多少。而好消息是，我们早就知道了模板串是什么样子的——因此我们知道它的所有子串是什么样子的，这就给了我们机会来进行预处理，从而检索出模板串所有下标对应的理想跳转，从而在匹配字符串的时候达到最高效率。</p>
+<p>如果你能够透过我凌乱的描述，理解了这个方法的可行之处，那么恭喜你，你已经理解了KMP对暴力字符串匹配算法的核心优化点。</p>
+<p>现在问题来了：我们要如何找到这样的理想跳转？对于任何字符串s，当s与自己错开n格时，假设有前k个字符依然匹配，这意味着该字符串s中，$[1, k]$区间中的字符和$[n + 1, n + k]$区间中的字符完全相等。而又不难发现，$strlen(s) = n + k$，因此我们也可以这样说：这种情况下，<strong>字符串s中有一个长度为k的前缀和它的长度为k的后缀完全相等</strong>。</p>
+<p><img src="https://cdn.luogu.com.cn/upload/image_hosting/qpwdmub6.png" alt="可以画图辅助理解"></p>
+<p>因此我们需要求得一个数组<code>next</code>，<code>next[i] = j</code>表示在模式串s中，有一个以模式串开头小标为起始下标，以下标i为结尾下标的子串，<strong>这个子串中有一个长度为j的前缀和它的长度为j的后缀完全相等</strong>。</p>
+<p>而当我们的场景是匹配字符串时，我们希望错开的n尽量小，这样就不会漏掉任何可能匹配的字符串，因此<strong>这个前缀/后缀是最长的</strong>。</p>
+<p>到此为止，如果我们正确理解了这个数组的含义，并在读入字符串的时候令字符串下标从1开始，就不难理解KMP算法匹配模式串的过程：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 由于next可能被cpp库函数定义过，我们写作ne</span></span><br><span class="line"><span class="comment">// p[N]为模板串，s[M]为模式串</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>, j = <span class="number">0</span>; i &lt;= m; ++ i ) &#123;</span><br><span class="line">    <span class="keyword">while</span> (j &amp;&amp; s[i] != p[j + <span class="number">1</span>]) &#123;</span><br><span class="line">        <span class="comment">// 只要j还没有跳转到0，并且下一个字符并不匹配，就继续跳转</span></span><br><span class="line">        j = ne[j];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (s[i] == p[j + <span class="number">1</span>]) &#123;</span><br><span class="line">        <span class="comment">// 字符匹配，则继续向前</span></span><br><span class="line">        ++ j ;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (j == n) &#123;</span><br><span class="line">        <span class="comment">// 所有字符都匹配，则匹配成功</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 注：j从0开始，j + 1指向模板串下一个要匹配的字符</span></span><br></pre></td></tr></table></figure>
+
+<p>实际上，要理解KMP匹配模式串的过程，关键在于理解<code>next</code>数组的意义，而假如你理解了，想必你接下来的主要问题就会和我一样：这么神奇的数组它是怎么求出来的？</p>
+<p>既然是求最长的子串前后缀，想必也是匹配字符串的工作，我们可以先看一下求这个数组的代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>, j = <span class="number">0</span>; i &lt;= n; ++ i) &#123;</span><br><span class="line">    <span class="keyword">while</span> (j &amp;&amp; p[i] != p[j + <span class="number">1</span>]) &#123;</span><br><span class="line">        j = ne[j];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (p[i] == p[j + <span class="number">1</span>]) &#123;</span><br><span class="line">        ++ j ;</span><br><span class="line">    &#125;</span><br><span class="line">    ne[i] = j;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后我就震惊地发现：这和KMP匹配模式串也太像了吧！然后我接着就乱了：这难道是在求<code>next</code>数组的时候也用了KMP？这不就递归了吗……</p>
+<p>希望你没有像我一样把自己搞晕——我们这就来理清求<code>next</code>数组的思路。</p>
+<p>由于我们的字符串都是从1开始储存的，那么我们就从下标1开始讨论。首先，<code>next[1] = 0</code>是显然的，当只有第一个字符匹配的时候，退无可退，我们只能从0开始重新匹配。而在接下来的匹配过程中，我们实际上要做这样一个事情：<strong>将模板串的开头和所有可能的子串结尾进行校对</strong>。为什么是模板串的开头呢？因为所有可能在匹配过程中出现的局部匹配子串，都只能是从头开始匹配，这是<del>废话</del>显然的。而模板串的所有位置显然都是可能的子串结尾——于是，我们就会手拿两个模板串做这样的事情：<em>把其中一根的开头对到另一根的开头上，依次校对过去，如果一直相等，就一直记录相等的字符数，因为这就是最长的相等的前/后缀；如果遇到了不相等的字符，就把下面的字符串往前挪，尝试校对出更短的相等的前/后</em>缀，看起来就像是：</p>
+<p><img src="https://cdn.luogu.com.cn/upload/image_hosting/ztq5jf9n.png" alt="校对过程"></p>
+<p>确实很像！匹配过程中的每一次i自增，都会记录一次j，<strong>这个j就是当前找到的最大的相等前后缀的长度</strong>（如果<code>p[i] == p[j + 1]</code>始终成立，那么显然找到的j就是不断增加的，对于每一个以i结尾的子串来说，显然这样的j就是最大的）。假设在某一段匹配的过程中，字符始终相等（绿色框），那么i和j就会齐头并进，直到遇到不相等的字符（红色框）：</p>
+<p><img src="https://cdn.luogu.com.cn/upload/image_hosting/t08nr4xe.png" alt="校对过程"></p>
+<p>这时，i指向了上面的红色框，j则指向下面红色框前面的绿色框，我们实际上就找到了<code>ne[i] = j</code>这是不难理解的。接下来的情况十分面善：<strong>我们面临了一个跳转的问题</strong>，即j是要从0开始匹配，还是可以从某个更优的下标开始？我们可以观察到，我们已经确定了<code>next[1] = 0</code>，因此在开始匹配的时候，我们就令<code>i = 2</code>，而i只会自增，j则是不一定自增。<strong>i始终是领先j的，这意味着，对于匹配过程中的任何时刻，<code>ne[j]</code>都是已知的</strong>！因此才有了这个和匹配模式串时一模一样的<code>while</code>循环——这个循环能够出现，意味着我们<strong>在匹配的过程中也充分利用了已经求出的<code>next</code>数组</strong>，这真是十分优美巧妙。</p>
+<p>到此为止，KMP算法的思想和实现的步骤已经（凌乱地）讨论完毕了，我们可以借助代码再一次梳理一下。</p>
+<p>下面的代码同是是AcWing上<a href="https://www.acwing.com/problem/content/833/" target="_blank" rel="noopener">KMP字符串</a>的题解：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span> + <span class="number">10</span>, M = <span class="number">1e6</span> + <span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> ne[N];</span><br><span class="line"><span class="keyword">char</span> p[N], s[M];</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n, m;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; n &gt;&gt; p + <span class="number">1</span> &gt;&gt; m &gt;&gt; s + <span class="number">1</span>;</span><br><span class="line">    <span class="comment">// 求next</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>, j = <span class="number">0</span>; i &lt;= n; ++ i ) &#123;</span><br><span class="line">        <span class="keyword">while</span> (j &amp;&amp; p[i] != p[j + <span class="number">1</span>]) j = ne[j];</span><br><span class="line">        <span class="keyword">if</span> (p[i] == p[j + <span class="number">1</span>]) j ++ ;</span><br><span class="line">        ne[i] = j;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 匹配模式串</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>, j = <span class="number">0</span>; i &lt;= m; ++ i ) &#123;</span><br><span class="line">        <span class="keyword">while</span> (j &amp;&amp; s[i] != p[j + <span class="number">1</span>]) j = ne[j];</span><br><span class="line">        <span class="keyword">if</span> (s[i] == p[j + <span class="number">1</span>]) j ++ ;</span><br><span class="line">        <span class="keyword">if</span> (j == n) &#123;</span><br><span class="line">            <span class="comment">// 成功时输出起始下标</span></span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"%d "</span>, i - n);</span><br><span class="line">            j = ne[j];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="https://cdn.luogu.com.cn/upload/image_hosting/jjee5dmc.png?x-oss-process=image/resize,m_lfit,h_170,w_225">
+                      <span class="reward-type">支付宝</span>
+                    </div>
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="https://cdn.luogu.com.cn/upload/image_hosting/lphudc6j.png?x-oss-process=image/resize,m_lfit,h_170,w_225">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -187,312 +276,106 @@
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2020/07/21/KMP/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/07/18/data-structure-1/" class="archive-article-date">
-  	<time datetime="2020-07-18T01:51:49.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-18</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2020/07/18/data-structure-1/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">data_structure_1</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/07/18/data-structure-1/">data_structure_1</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">data_structure</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/07/16/discretization-interval-merge/" class="archive-article-date">
-  	<time datetime="2020-07-16T13:56:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-16</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/07/16/discretization-interval-merge/">discretization&amp;interval_merge</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">algorithm</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/07/16/double_pointer&bit_operation/" class="archive-article-date">
-  	<time datetime="2020-07-16T01:19:19.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-16</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/07/16/double_pointer&bit_operation/">double_pointer&amp;bit_operation</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">algorithm</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/07/12/%E5%89%8D%E7%BC%80%E5%92%8C%E4%B8%8E%E5%B7%AE%E5%88%86%E7%AE%97%E6%B3%95/" class="archive-article-date">
-  	<time datetime="2020-07-12T13:37:49.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-12</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/07/12/%E5%89%8D%E7%BC%80%E5%92%8C%E4%B8%8E%E5%B7%AE%E5%88%86%E7%AE%97%E6%B3%95/">前缀和与差分算法</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">algorithm</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/07/12/high-accuracy/" class="archive-article-date">
-  	<time datetime="2020-07-12T12:24:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-12</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/07/12/high-accuracy/">high_accuracy</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">algorithm</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/07/11/dichotomy/" class="archive-article-date">
-  	<time datetime="2020-07-11T13:10:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-11</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/07/11/dichotomy/">dichotomy</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">algorithm</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/07/08/sort/" class="archive-article-date">
-  	<time datetime="2020-07-08T10:46:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-08</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/07/08/sort/">sort</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">algorithm</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/07/08/%E7%A2%91/" class="archive-article-date">
-  	<time datetime="2020-07-08T09:35:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-08</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/07/08/%E7%A2%91/">碑</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
 
 
           </div>
@@ -515,8 +398,8 @@
 	var yiliaConfig = {
 		mathjax: true,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
