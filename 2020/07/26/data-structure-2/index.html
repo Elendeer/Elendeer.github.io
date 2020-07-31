@@ -6,20 +6,24 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://yoursite.com">
-  <title>dichotomy | Daniel_Elendeer&#39;s Blog</title>
+  <title>data_structure_2 | Daniel_Elendeer&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="这段时间噬月在进行算法的复习和学习！ 这篇博客将包括两个二分算法：整数二分和浮点数二分。">
+  <meta name="description" content="这段时间噬月在进行数据结构和算法的复习和学习！ 这篇博客将包括Trie树、并查集以及熟悉的堆。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="dichotomy">
-<meta property="og:url" content="https://yoursite.com/2020/07/11/dichotomy/index.html">
+<meta property="og:title" content="data_structure_2">
+<meta property="og:url" content="https://yoursite.com/2020/07/26/data-structure-2/index.html">
 <meta property="og:site_name" content="Daniel_Elendeer&#39;s Blog">
-<meta property="og:description" content="这段时间噬月在进行算法的复习和学习！ 这篇博客将包括两个二分算法：整数二分和浮点数二分。">
+<meta property="og:description" content="这段时间噬月在进行数据结构和算法的复习和学习！ 这篇博客将包括Trie树、并查集以及熟悉的堆。">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2020-07-11T13:10:00.000Z">
-<meta property="article:modified_time" content="2020-07-11T15:29:02.134Z">
+<meta property="og:image" content="https://yoursite.com/2020/07/26/image/Tire_tree.png">
+<meta property="og:image" content="https://yoursite.com/2020/07/26/image/union-find_set.png">
+<meta property="og:image" content="https://yoursite.com/2020/07/26/image/union-find_set_path_compression.png">
+<meta property="article:published_time" content="2020-07-26T07:39:29.000Z">
+<meta property="article:modified_time" content="2020-07-31T01:38:48.602Z">
 <meta property="article:author" content="Daniel_Elendeer">
-<meta property="article:tag" content="algorithm">
+<meta property="article:tag" content="data_structure">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yoursite.com/2020/07/26/image/Tire_tree.png">
   
     <link rel="alternative" href="/atom.xml" title="Daniel_Elendeer&#39;s Blog" type="application/atom+xml">
   
@@ -151,86 +155,60 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-dichotomy" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-data-structure-2" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      dichotomy
+      data_structure_2
     </h1>
   
 
         
-        <a href="/2020/07/11/dichotomy/" class="archive-article-date">
-  	<time datetime="2020-07-11T13:10:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-11</time>
+        <a href="/2020/07/26/data-structure-2/" class="archive-article-date">
+  	<time datetime="2020-07-26T07:39:29.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-26</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>这段时间噬月在进行算法的复习和学习！</p>
-<p>这篇博客将包括两个二分算法：整数二分和浮点数二分。</p>
+        <p>这段时间噬月在进行数据结构和算法的复习和学习！</p>
+<p>这篇博客将包括Trie树、并查集以及熟悉的堆。</p>
 <a id="more"></a>
 
-<h2 id="整数二分"><a href="#整数二分" class="headerlink" title="整数二分"></a>整数二分</h2><p>二分的本质并不是单调性，有单调性概念的题目一定可以二分，但可以二分的题目不一定有所谓的单调性。</p>
-<p>假如有一个区间，可以按照具有/不具有某种性质来划分成两个部分，就可以使用二分法求出边界点。</p>
-<p>整数区间是离散的。</p>
-<p>设有一个整数区间$[l, r]$可分成$[l, x]$和$[x + 1, r]$，另一种分法是$[l, x - 1]$和$[x, r]$，前者的$x$是左区间的右端点，后者的$x$是右区间的左端点。两个不同端点的程序模板略有差异。</p>
-<p>前者：</p>
+<p>本篇算法模板来自AcWing的y总。</p>
+<h2 id="Tire树"><a href="#Tire树" class="headerlink" title="Tire树"></a>Tire树</h2><p>当我们想维护一个集合的时候，我们会怎么做呢？如果我们希望维护一个字符串集合，我们又会如何来储存字符串，使得查询动作更加的高效呢？Tire树就是一个不错的选择。</p>
+<p>这是一个简单而不失实用性的数据结构，让我们直观观察一下它长什么样：</p>
+<p><img src="../source/../image/Tire_tree.png" alt="Tire树"></p>
+<p>可以看到，我们在维护的字符串集合里有四个字符串，我们的存储方式十分的明了：创建一棵树来储存这个字符串集合；对于每个字符串，从头开始遍历字符串的每个字符；如果该字符不存在于当前位置，则创建该字符的节点，若存在，则继续遍历下一个字符；循环进行上面的过程，当字符串读取完成后，就在结尾字符上做一个标记，表明在此处是一个字符串的结尾。经过这样的操作后，不难得出上图的结构，这棵树就是我们维护的集合。</p>
+<p>这样的结构也便于查找：同样的，从根节点开始，依次向下搜寻要查找的字符串的各个字符是否存在，若不存在，立即跳出并返回<code>false</code>；若字符串遍历结束后发现每个字符都存在，那么检查最后一个字符位置是否有标记，若有，返回<code>true</code>，否则返回<code>false</code>。</p>
+<p>我们可以看一个简单的例题：<a href="https://www.acwing.com/problem/content/837/" target="_blank" rel="noopener">Trie字符串统计</a></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span> + <span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> son[N][<span class="number">26</span>], cnt[N], idx;</span><br><span class="line"><span class="comment">// son[p][u]记录节点p的子节点u，因为本题字符只有字母，故有26种情况</span></span><br><span class="line"><span class="comment">// cnt[p]记录集合内以节点p结尾的字符串的个数</span></span><br><span class="line"><span class="comment">// idx作用类似静态链表中的idx，表示当前消耗的数组模拟的堆内存的位置</span></span><br><span class="line"><span class="keyword">char</span> str[N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(<span class="keyword">char</span> * str)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> p = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 从根节点开始，根节点是空节点</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; str[i]; ++ i ) &#123;</span><br><span class="line">        <span class="comment">// 技巧：str结尾字符为'\0', '\0' = 0;</span></span><br><span class="line">        <span class="keyword">int</span> u = str[i] - <span class="string">'a'</span>;</span><br><span class="line">        <span class="comment">// 映射</span></span><br><span class="line">        <span class="keyword">if</span> (!son[p][u]) son[p][u] = ++ idx;</span><br><span class="line">        <span class="comment">// 判断节点p的子节点u是否存在，不存在则创建</span></span><br><span class="line">        p = son[p][u];</span><br><span class="line">        <span class="comment">// 改变当前节点到子节点</span></span><br><span class="line">    &#125;</span><br><span class="line">    cnt[p] ++ ;</span><br><span class="line">    <span class="comment">// 记录集合内以节点p结尾的字符串的个数</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">char</span> * str)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> p = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; str[i]; ++ i ) &#123;</span><br><span class="line">        <span class="keyword">int</span> u = str[i] - <span class="string">'a'</span>;</span><br><span class="line">        <span class="keyword">if</span> (!son[p][u]) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        p = son[p][u];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> cnt[p];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; n;</span><br><span class="line">    <span class="keyword">while</span> (n -- ) &#123;</span><br><span class="line">        <span class="keyword">char</span> op[<span class="number">2</span>];</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%s%s"</span>, op, str);</span><br><span class="line">        <span class="keyword">if</span> (*op == <span class="string">'I'</span>) insert(str);</span><br><span class="line">        <span class="keyword">else</span> <span class="built_in">printf</span>(<span class="string">"%d\n"</span>, query(str));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="并查集"><a href="#并查集" class="headerlink" title="并查集"></a>并查集</h2><p>并查集乍一听是个晦涩的术语，其实不是如此。并查集完全可以顾名思义：可以支持<strong>快速合并</strong>集合以及<strong>快速查找</strong>某个元素属于哪个集合的数据结构。</p>
+<p>什么叫快速？我们不妨先来感受一下慢速：假如我们有从$n$个元素属于$A$集合，$m$个元素属于$B$集合，记录元素的方式是开一个数组，对于每一个元素<br>$x$，<code>set[x]</code>表示其所属集合；那么现在要合并两个集合，就要进行$n$或$m$次操作——我们需要依次改换数组元素的值，时间复杂度是$O(n)$的。而在这种情况下我们要想查找某个元素属于哪一个集合则会较为简单，只需要一次访问即可。</p>
+<p>而并查集，无论是合并集合还是查找元素，时间复杂度都达到了惊人的<em>接近于$O(1)$</em>。它是怎么做到的呢？其实并不难，关键在于用树储存数据以及及时的优化，。并查集的树储存（在优化之前）并没有什么特定的规则，我们可以通过模拟并查集的合并操作来观察并查集的树形结构是怎么形成的。</p>
+<p><img src="../image/union-find_set.png" alt="union-find_set"></p>
+<p>上图展示的是并查集在合并集合时的操作，可见并查集的树形结构是通过合并的过程逐步形成的，而不是类似（接下来会复习到的）堆或其他树一样有一个特殊的构造方法。而并查集合并两个集合只需要一次操作，因而时间复杂度是$O(1)$。而在并查集中查询某个元素属于哪个集合也很简单，你只需要不断沿着父节点往上寻找，直到找到树根，树根的节点值即是该元素所属的集合编号。你也许会说：这样的查询方式效率显然没有之前高呀，之前的查询是$O(1)$，而现在的树形结构显然在$O(\log n)$和$O(n)$之间。</p>
+<p>没错，因此我们要对并查集进行优化，而优化的思路就是让合并集合产生的树尽量的矮。我们一般有如下两个做法：</p>
 <ol>
-<li>mid = (l + r + 1) / 2</li>
-<li>if (check(mid))<ol>
-<li>true: $x$在$[mid, r]$中，更新l = mid</li>
-<li>false: $x$在$[l, mid - 1]$中，更新r = mid - 1</li>
+<li>路径压缩<br> 令父节点不指向根节点的节点的父节点指向根节点，以便之后进行$O(1)$的访问。是很强的优化。</li>
+<li>按秩优化<br> 当合并两棵高度不同的树时，优先考虑把矮树的根节点插入到高树的根节点下面，使得合并后的树更矮。（个人觉得和路径压缩比起来确实没什么卵用）。</li>
 </ol>
-</li>
-<li>递归/循环</li>
-</ol>
-<p>后者：</p>
-<ol>
-<li>mid = (l + r) / 2</li>
-<li>if (check(mid))<ol>
-<li>true: $x$在$[l, mid]$中，更新r = mid</li>
-<li>false: $x$在$[mid + 1, r]$中，更新l = mid + 1</li>
-</ol>
-</li>
-<li>递归/循环</li>
-</ol>
-<p>以下是两个模板：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">check</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;<span class="comment">/* ... */</span>&#125; <span class="comment">// 检查x是否满足某种性质</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 区间[l, r]被划分成[l, mid]和[mid + 1, r]时使用：</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">bsearch_1</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (l &lt; r)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> mid = l + r &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (check(mid)) r = mid;    <span class="comment">// check()判断mid是否满足性质</span></span><br><span class="line">        <span class="keyword">else</span> l = mid + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> l;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 区间[l, r]被划分成[l, mid - 1]和[mid, r]时使用：</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">bsearch_2</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (l &lt; r)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> mid = l + r + <span class="number">1</span> &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (check(mid)) l = mid;</span><br><span class="line">        <span class="keyword">else</span> r = mid - <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> l;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>按秩优化似乎也可以使得路径压缩所需的操作次数更少，但由于收效不大，接下来的代码实现只使用路径压缩。而使用路径压缩之后的并查集，查询操作的时间复杂度就可以达到所谓的接近$O(1)$了（说接近而不说等于，是因为路径压缩的耗时应当算入查询耗时当中，详见下面的实现）。</p>
+<p><img src="../image/union-find_set_path_compression.png" alt="path_compression"></p>
+<p>同样我们可以看一下AcWing的例题<a href="https://www.acwing.com/problem/content/838/" target="_blank" rel="noopener">合并集合</a></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span> + <span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> p[N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">find_root</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123; <span class="comment">// 很妙地同时进行了路径压缩</span></span><br><span class="line">    <span class="keyword">if</span> (p[x] != x) p[x] = find_root(p[x]);</span><br><span class="line">    <span class="keyword">return</span> p[x];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n, m;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; ++ i ) &#123;</span><br><span class="line">        p[i] = i;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (m -- ) &#123;</span><br><span class="line">        <span class="keyword">char</span> op[<span class="number">2</span>];</span><br><span class="line">        <span class="keyword">int</span> a, b;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%s%d%d"</span>, op, &amp;a, &amp; b);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (*op == <span class="string">'M'</span>) p[find_root(a)] = find_root(b);</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (find_root(a) == find_root(b)) <span class="built_in">printf</span>(<span class="string">"Yes\n"</span>);</span><br><span class="line">            <span class="keyword">else</span> <span class="built_in">printf</span>(<span class="string">"No\n"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+<p>以上是并查集的基础内容。</p>
 <hr>
-<p>为什么前者要补上+1：</p>
-<p>令l = r - 1，则check(mid)为true时，更新：l = mid = r（整数除法下取整），发生死循环。</p>
-<hr>
-<p>如何考虑使用那种模板：</p>
-<p>先写（或设想）check函数（的边界）（不一定要写成函数，可以直接写在if条件里），然后随便写一种二分法，思考如何寻找点和更新边界；</p>
-<p>如果是l = mid更新，则mid的求法添上+1，如果是r = mid则不用。</p>
-<hr>
-<h2 id="浮点数二分"><a href="#浮点数二分" class="headerlink" title="浮点数二分"></a>浮点数二分</h2><p>由于浮点数可以近似看成连续的（数学上的实数当然是严格连续的），那么就没有整数二分的边界问题。不需要考虑边界，浮点数二分就变得更加简单。思路则和整数二分是一样的，同为二分法。</p>
-<p>解区间可以二分到很小，至于多小就得看我们希望它多小，并把我们的（一般来说也是题目的）要求写进<code>while</code>循环的条件里。</p>
-<p>例：开方</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line">    <span class="keyword">double</span> x;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; x;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">double</span> l = <span class="number">0</span>, r = x;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (r - l &gt;= <span class="number">1e-6</span>) &#123;</span><br><span class="line">        <span class="keyword">double</span> mid = (l + r) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span> (mid * mid &gt; x) &#123;</span><br><span class="line">            r = mid;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            l = mid;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%lf"</span>, l);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>最后的输出l或r都可以。上述程序输入4有可能不会得到2，而是1.999999，这是<code>while</code>循环条件造成的精度问题，将其改为<code>r - l &gt; 1e8</code>则可以得到2.000000</p>
-<p>一条关于精度的经验之谈：若题目要求保留5位小数，则写1e-7，保留6位则写1e-8，总之while条件至少应该比要求的精度小两个数量级。</p>
-<p>也有另外一种比较神奇的写法：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line">    <span class="keyword">double</span> x;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; x;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">double</span> l = <span class="number">0</span>, r = x;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= <span class="number">100</span>; ++ j) &#123;</span><br><span class="line">        <span class="keyword">double</span> mid = (l + r) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span> (mid * mid &gt; x) &#123;</span><br><span class="line">            r = mid;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            l = mid;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%lf"</span>, l);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>此法叫做：管他丫的三七二十一迭代它一百次再说。</p>
-<p>一般也比较有效。</p>
-<hr>
-<h2 id="一些废话"><a href="#一些废话" class="headerlink" title="一些废话"></a>一些废话</h2><p>while的条件描述了“二分精度”，而整数二分到最后两个端点必定会相遇，无所谓精度问题；浮点数二分则有精度问题。</p>
-<p>while中的if通过条件判断（亦即是check函数）来描述二分的过程中如何更新区间的端点，整数二分的边界问题需要留心注意处理方式。</p>
-<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><p><a href="https://www.acwing.com/problem/content/791/" target="_blank" rel="noopener">AcWing的一个不错的整数二分题</a></p>
-<p>题解：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">100010</span>;</span><br><span class="line"><span class="keyword">int</span> a[N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> n, q;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d%d"</span>, &amp;n, &amp;q);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt;= n - <span class="number">1</span>; ++ j) &#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%d"</span>, &amp;a[j]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= q; ++ j) &#123;</span><br><span class="line">        <span class="keyword">int</span> k;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%d"</span>, &amp;k);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> l = <span class="number">0</span>, r = n - <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span>(l &lt; r) &#123;</span><br><span class="line">            <span class="keyword">int</span> mid = l + r &gt;&gt; <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span> (a[mid] &gt;= k) &#123;</span><br><span class="line">                r = mid;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                l = mid + <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (a[r] != k) &#123;</span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"-1 -1"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; l &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">            r = n - <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">while</span> (l &lt; r) &#123;</span><br><span class="line">                <span class="keyword">int</span> mid = l + r + <span class="number">1</span> &gt;&gt; <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">if</span> (a[mid] &lt;= k) &#123;</span><br><span class="line">                    l = mid;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span> &#123;</span><br><span class="line">                    r = mid - <span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; l &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这里需要注意check函数的写法，写<code>a[mid] &gt;= k</code>而不是<code>a[mid] &lt; k</code>正是因为需要求得右区间的左端点，而后者会求得左区间的右端点。这自然是一开始蒟蒻噬月踩的坑。</p>
-<p>两个二分求端点中间的if则是一个判断是否找到数k的一个小技巧。</p>
+<h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><p><em>我曾经在洛谷撞南墙的时候为了解一道题而学习了堆排序，手写了大根堆和小根堆的模板，虽然过程曲折，并且知道stl有自带优先队列后捶胸顿足，但仍觉得早点学习堆是个好事——这玩意着实有点漂亮。</em></p>
+<p>堆同样是一种数据结构——也许我们一开始可能把堆栈和堆内存栈内存搞混，但实际上它们还是不同的东西，有必要说明一下。在上一篇数据结构的博客里，我们已经讨论过那个简单到令人发指的栈，接下来我们会讨论相对复杂一点的堆。</p>
+<p><em>等待更新中…</em></p>
 
       
 
@@ -275,7 +253,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">algorithm</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">data_structure</a>
         		</li>
       		
 		</ul>
@@ -331,7 +309,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=https://yoursite.com/2020/07/11/dichotomy/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=https://yoursite.com/2020/07/26/data-structure-2/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -345,18 +323,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2020/07/12/high-accuracy/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          high_accuracy
-        
-      </div>
-    </a>
   
-  
-    <a href="/2020/07/08/sort/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">sort</div>
+    <a href="/2020/07/21/KMP/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">KMP</div>
       <i class="icon-circle-right"></i>
     </a>
   
