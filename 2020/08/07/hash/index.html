@@ -18,7 +18,7 @@
 <meta property="og:image" content="https://user-images.githubusercontent.com/61586472/89728880-1a889e80-da63-11ea-9853-2794751a4439.png">
 <meta property="og:image" content="https://user-images.githubusercontent.com/61586472/89728884-1d838f00-da63-11ea-9050-606665e81b6b.png">
 <meta property="article:published_time" content="2020-08-07T04:04:18.000Z">
-<meta property="article:modified_time" content="2020-08-09T09:10:30.195Z">
+<meta property="article:modified_time" content="2020-08-11T06:26:24.167Z">
 <meta property="article:author" content="Daniel_Elendeer">
 <meta property="article:tag" content="data_structure algorithm">
 <meta name="twitter:card" content="summary">
@@ -177,15 +177,14 @@
         <p>这段时间噬月在进行数据结构和算法的复习和学习！</p>
 <p>这篇博客将包括哈希表以及字符串哈希算法（字符串前缀哈希法）。</p>
 <a id="more"></a>
-
 <p>本篇算法模板来自AcWing的y总。</p>
 <h2 id="哈希表"><a href="#哈希表" class="headerlink" title="哈希表"></a>哈希表</h2><p><em>哈希表又称<strong>散列表</strong>，是一个可以根据键值访问存储位置（元素）的数据结构。</em> 亦即，它通过一个可以计算出键值的函数，将所需查询的数据映射到表中一个位置来访问和记录，由于使用函数来映射位置而不是粗暴地遍历整个表，这样的操作无疑可以加快查找速度。这个映射函数称做<strong>散列函数</strong>或<strong>哈希函数</strong>，存放记录的数组称做<strong>散列表</strong>或<strong>哈希表</strong>。</p>
 <p>Wiki举了一个很形象的例子，这里引用一下：</p>
-<p>一个通俗的例子是，为了查找电话簿中某人的号码，可以创建一个按照人名首字母顺序排列的表（即建立人名$x$到首字母$F(x)$的一个函数关系），在首字母为W的表中查找“王”姓的电话号码，显然比直接查找就要快得多。<em>这里使用人名作为关键字（即所谓键值），“取首字母”是这个例子中散列函数的函数法则$F$，存放首字母的表对应散列表。</em> 关键字和函数法则理论上可以任意确定。</p>
-<p>以上引自Wiki。</p>
+<blockquote>
+<p>一个通俗的例子是，为了查找电话簿中某人的号码，可以创建一个按照人名首字母顺序排列的表（即建立人名$x$到首字母$F(x)$的一个函数关系），在首字母为W的表中查找“王”姓的电话号码，显然比直接查找就要快得多。<em>这里使用人名作为关键字（即所谓键值），“取首字母”是这个例子中散列函数的函数法则$F$，存放首字母的表对应散列表。</em> 关键字和函数法则理论上可以任意确定。<br>以上引自Wiki。</p>
+</blockquote>
 <p>从上述例子不难对哈希表及其功能有一个感性的认知。接下来我们会讨论具体的问题和思路，以及代码实现的具体方式。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">注：曾经在博文里讨论过的离散化是一种特殊的哈希方式。</span><br></pre></td></tr></table></figure>
-
 <hr>
 <p>首先是如何选取哈希函数的问题。具体的问题可以设计不同的哈希函数，对于同一问题的不同哈希函数而言，优劣之分是确实存在的。而对于我们在解题时最常见的情况——把一些分布范围大的数映射到较窄的区间里——而言，模上一个数是最常见也是最方便的选择。</p>
 <p>我们还需要考虑一个几乎所有哈希表都需要考虑到的问题：映射之后的冲突问题。什么意思呢？即：两个不同的数，模上一个数之后值相等，怎么办？对于Wiki那个例子来说就是：两个不同电话号码的主人都姓王，怎么办？我们需要解决这样的冲突。解决冲突常用的方法有两个：<strong>拉链法</strong>和<strong>开放寻址法</strong>。</p>
@@ -194,29 +193,23 @@
 <p><img src="https://user-images.githubusercontent.com/61586472/89728880-1a889e80-da63-11ea-9853-2794751a4439.png" alt="hash"></p>
 <p>而不管用哪一种方法，哈希表的操作都可以近似认为是$O(1)$的。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">注：在算法题中一般只涉及插入和查询，而不涉及删除。</span><br><span class="line">若有需要删除，则在下面的实现中加入禁用元素的标志和方法即可。</span><br></pre></td></tr></table></figure>
-
 <p>那么开放寻址法有没有可能一直存在连续的数导致时间复杂度暴涨呢？亦或是储存的元素太多导致把空间填满，使得开放寻址法寻不到地方了呢？事实上我们在实现的时候会规避这些可能的bug，下面可以以一题为例来观察一下两个不同的方法。</p>
 <hr>
 <p>我们可以看AcWing上的一个例题<a href="https://www.acwing.com/problem/content/842/" target="_blank" rel="noopener">模拟散列表</a></p>
 <p>在此题中，我们需要维护一个数集，为方便插入和查询，可以考虑使用哈希表来做。而一般在做哈希的时候，我们倾向于把要模的数取成一个质数，并且离2的整次幂尽可能远，这可以降低冲突几率。我们可以使用以下代码来求得离$N$最近且大于$N$的一个质数。</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = N;; ++ i ) &#123;</span><br><span class="line">    <span class="keyword">bool</span> flag = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">2</span>; j * j &lt;= i; ++ j ) &#123;</span><br><span class="line">        <span class="keyword">if</span> (i % j == <span class="number">0</span>) &#123;</span><br><span class="line">            flag = <span class="literal">false</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (flag) &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; i &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>拉链法</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span> + <span class="number">19</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> h[N], e[N], ne[N], idx;</span><br><span class="line"></span><br><span class="line"><span class="comment">// insert函数可以结合静态链表博客辅助理解</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 计算哈希值k，加N模N防止出现负数</span></span><br><span class="line">    <span class="keyword">int</span> k = (x % N  + N ) % N;</span><br><span class="line">    <span class="comment">// 创建新的节点放入x值</span></span><br><span class="line">    e[idx] = x;</span><br><span class="line">    <span class="comment">// 新节点的指针指向h[k]指向的节点</span></span><br><span class="line">    ne[idx] = h[k];</span><br><span class="line">    <span class="comment">// 令h[k]指向当前节点，并使idx自增到新的未使用空间</span></span><br><span class="line">    h[k] = idx ++ ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 计算哈希值k</span></span><br><span class="line">    <span class="keyword">int</span> k = (x % N + N) % N;</span><br><span class="line">    <span class="comment">// 遍历对应位置的链表</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = h[k]; i != <span class="number">-1</span>; i = ne[i]) &#123;</span><br><span class="line">        <span class="comment">// 找到</span></span><br><span class="line">        <span class="keyword">if</span> (e[i] == x)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 没找到</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; n;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">memset</span>(h, <span class="number">-1</span>, <span class="keyword">sizeof</span>(h));</span><br><span class="line">    <span class="comment">// 表中所有元素一开始都指向-1，即指向空节点</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (n -- ) &#123;</span><br><span class="line">        <span class="keyword">char</span> op[<span class="number">2</span>];</span><br><span class="line">        <span class="keyword">int</span> x;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%s%d"</span>, op, &amp;x);</span><br><span class="line">        <span class="keyword">if</span> (*op == <span class="string">'I'</span>) &#123;</span><br><span class="line">            insert(x);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (find(x)) <span class="built_in">puts</span>(<span class="string">"Yes"</span>);</span><br><span class="line">            <span class="keyword">else</span> <span class="built_in">puts</span>(<span class="string">"No"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p><em>注：在拉链法中，<code>h[N]</code>中存放的是模拟指针（即静态链表博文中讨论过的那种），而不是直接存放数据。</em></p>
 <hr>
 <p>开放寻址法</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 开两倍（或三倍）以降低冲突概率，并取最近的质数</span></span><br><span class="line"><span class="comment">// null是我们约定的空位标志，需要在数据范围之外</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">2e5</span> + <span class="number">3</span>, null = <span class="number">0x3f3f3f3f</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> h[N];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 如果找到x，返回其位置；否则返回一个可用的空位</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> k = (x % N + N) % N;</span><br><span class="line">    <span class="keyword">while</span> (h[k] != null &amp;&amp; h[k] != x) &#123;</span><br><span class="line">        k ++ ;</span><br><span class="line">        <span class="keyword">if</span> (k == N) k = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> k;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// memset按照字节填充值，一个整型占四个字节</span></span><br><span class="line">    <span class="comment">// 因此填充0x3f会使得数组内所有int数都是0x3f3f3f3f</span></span><br><span class="line">    <span class="built_in">memset</span>(h, <span class="number">0x3f</span>, <span class="keyword">sizeof</span>(h));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; n;</span><br><span class="line">    <span class="keyword">while</span> (n -- ) &#123;</span><br><span class="line">        <span class="keyword">char</span> op[<span class="number">2</span>];</span><br><span class="line">        <span class="keyword">int</span> x;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%s%d"</span>, op, &amp;x);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> k = find(x);</span><br><span class="line">        <span class="keyword">if</span> (*op == <span class="string">'I'</span>) &#123;</span><br><span class="line">            h[k] = x;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (h[k] != null) <span class="built_in">puts</span>(<span class="string">"Yes"</span>);</span><br><span class="line">            <span class="keyword">else</span> <span class="built_in">puts</span>(<span class="string">"No"</span>);</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>两种方法都比较常用，但开放寻址法的代码较短，也只需要开一个数组。</p>
 <h2 id="字符串前缀哈希法"><a href="#字符串前缀哈希法" class="headerlink" title="字符串前缀哈希法"></a>字符串前缀哈希法</h2><p>假如我们现在有一个字符串<code>str = &quot;ABCDEF&quot;</code>，我们现在预处理出它的所有前缀哈希：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">h[0] &#x3D; 0</span><br><span class="line">h[1] 为 &quot;A&quot; 的前缀哈希</span><br><span class="line">h[2] 为 &quot;AB&quot; 的前缀哈希</span><br><span class="line">h[3] 为 &quot;ABC&quot; 的前缀哈希</span><br><span class="line">h[4] 为 &quot;ABCD&quot; 的前缀哈希</span><br><span class="line">h[5] 为 &quot;ABCDE&quot; 的前缀哈希</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-
 <p>那么如何来得到一个字符串的哈希值呢？我们这里先将字符串看作一个$P$进制的数，每一个字母是一个数字（按照$ASCII$码排序）。</p>
 <p>举个例子：字符串<code>ABCD</code>，我们将它视为$P$进制的<code>1234</code>（实际上我们实现时会直接把每个字符看成ASCII码的int值，这相当于把字符看成“ASCII码那么多位数的进制数表示的P进制数”，有点绕，但确实可行），此时它应该等于十进制的</p>
-<p>$$ (1 \times P^3 + 2 \times P^2 + 3 \times P^1 + 4 \times P^0) $$</p>
-<p>这很合理，不过还有一个小问题需要解决：我们的字符串可能很长，因此我们可能得到一个相当长的数，为此我们需要让上式$mod$上一个数$Q$，从而把一个字符串映射到$[0, Q - 1]$的区间上。</p>
+<script type="math/tex; mode=display">(1 \times P^3 + 2 \times P^2 + 3 \times P^1 + 4 \times P^0)</script><p>这很合理，不过还有一个小问题需要解决：我们的字符串可能很长，因此我们可能得到一个相当长的数，为此我们需要让上式$mod$上一个数$Q$，从而把一个字符串映射到$[0, Q - 1]$的区间上。</p>
 <p>OK，这里有几个值得注意的地方：</p>
 <ol>
 <li>不能把某个字符——比如叫字符$c$，映射成$P$进制0——否则字符串 <code>c</code>将和字符串<code>cc</code>拥有相同的哈希值。</li>
@@ -227,8 +220,7 @@
 </ol>
 <p>实现也相当简单：写作 <code>h[i] = h[i - 1] * P + str[i]</code>即可。</p>
 <p>那么将字符串哈希成数字的内容讲完了，这个处理方法有什么用呢？答案是：我们可以利用我们处理出来的某个字符串的前缀哈希值，使用如下公式计算出该字符串的任意子串的哈希值。</p>
-<p>$$ 设字符串str中有两个位置L和R, L &lt; R \ 欲求从L到R的子串的哈希值res \ 则 res = h[R] - h[L - 1] \times P^{R - L + 1}$$</p>
-<p>为什么可以这样做呢？很简单：<code>h[L - 1]</code>和<code>h[R]</code>分别是以$L - 1$和$R$结尾的前缀字符串的哈希值，最高位相差了$L - R + 1$个$P$进制位；而$h[L - 1] \times P^{R - L + 1}$正是先把位数交少的<code>h[L - 1]</code>拔到与<code>h[R]</code>平齐，再做减法，自然得到了从$L$到$R$的子串的哈希值。</p>
+<script type="math/tex; mode=display">设字符串str中有两个位置L和R, L < R \\ 欲求从L到R的子串的哈希值res \\ 则 res = h[R] - h[L - 1] \times P^{R - L + 1}</script><p>为什么可以这样做呢？很简单：<code>h[L - 1]</code>和<code>h[R]</code>分别是以$L - 1$和$R$结尾的前缀字符串的哈希值，最高位相差了$L - R + 1$个$P$进制位；而$h[L - 1] \times P^{R - L + 1}$正是先把位数交少的<code>h[L - 1]</code>拔到与<code>h[R]</code>平齐，再做减法，自然得到了从$L$到$R$的子串的哈希值。</p>
 <p><img src="https://user-images.githubusercontent.com/61586472/89728884-1d838f00-da63-11ea-9050-606665e81b6b.png" alt="string_hash"></p>
 <p>如何得到任意子串的哈希值的内容也讲完了，那么这又有什么用呢？其实提到<em>前缀哈希</em>和<em>任意子串</em>，我们可能会想到一个熟悉的东西叫做<em>KMP字符串匹配算法</em>——没错，在大部分情况下字符串哈希都可以完成KMP可以完成的事情，而且更加的简单。</p>
 <p>举个例子，我们可以看一下这个<a href="https://www.acwing.com/problem/content/843/" target="_blank" rel="noopener">询问字符串中任意两个子串是否相等的题</a>，这个题使用字符串哈希显然比KMP来得方便。</p>
@@ -506,6 +498,10 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">algorithm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">STL</a>
               </li>
              
@@ -514,11 +510,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">algorithm</a>
+                <a href="javascript:void(0)" class="js-tag color5">data_structure algorithm</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">data_structure algorithm</a>
+                <a href="javascript:void(0)" class="js-tag color5">math</a>
               </li>
             
             <div class="clearfix"></div>
@@ -675,5 +671,21 @@ MathJax.Hub.Queue(function() {
 
 </div>
   </div>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<!-- <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 </body>
 </html>

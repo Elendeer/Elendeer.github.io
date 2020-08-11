@@ -174,7 +174,6 @@
         <p>这段时间噬月在进行算法的复习和学习！</p>
 <p>这篇博客将包括双指针算法以及两种常用的位运算操作。</p>
 <a id="more"></a>
-
 <p>本篇算法模板来自AcWing的y总。</p>
 <h2 id="双指针算法"><a href="#双指针算法" class="headerlink" title="双指针算法"></a>双指针算法</h2><p>一般分为两类：</p>
 <ol>
@@ -184,12 +183,10 @@
 <p><em>联想：归并排序和快速排序。参考博文sort。</em></p>
 <p>双指针算法一般长成这样：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>, j = <span class="number">0</span>; i &lt; n; ++ i ) &#123;</span><br><span class="line">    <span class="keyword">while</span> (j &lt; i &amp;&amp; check(i, j)) &#123;</span><br><span class="line">        ++ j;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 后面是题目的具体逻辑</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>或者类似的样子。</p>
 <p>双指针算法的核心思想：将形如双重for嵌套的暴力遍历算法（$O(n^2)$）优化成$O(n)$。在写题时，可以先写一个暴力算法，然后通过观察之间有没有单调关系，来进行双指针优化。</p>
 <p>双指针算法的概念比较广泛，可以看一题<a href="https://www.acwing.com/problem/content/801/" target="_blank" rel="noopener">最长连续不重复子序列</a>作为例子，题解如下：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span> + <span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> a[N], b[N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; n;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= n - <span class="number">1</span>; ++ i ) &#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%d"</span>, &amp;a[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> j = <span class="number">0</span>, res = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= n - <span class="number">1</span>; ++ i ) &#123;</span><br><span class="line">        b[a[i]] ++ ;</span><br><span class="line">        <span class="keyword">while</span> (j &lt;= i &amp;&amp; b[a[i]] &gt; <span class="number">1</span>) &#123;</span><br><span class="line">            b[a[j]] -- ;</span><br><span class="line">            j ++ ;</span><br><span class="line">        &#125;</span><br><span class="line">        res = max(res, i - j + <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; res;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>这题同样有暴力解法，亦即是两重<code>for</code>循环枚举所有可能的$[j, i]$区间，一个个计数并判断。</p>
 <p>其中的单调关系体现在：设区间$[j, i]$内有重复元素，则区间$[j - 1, i]$内必定也有。这意味着在枚举j的位置时，j从不用后退。于是可以把双重<code>for</code>优化成单个<code>for</code>枚举i，并用<code>while</code>及时更新j的位置。使用了一个体现了映射思想的数组b，令<code>b[n]</code>记录数字n出现的次数，一旦右端点指向的数字曾经出现过（即<code>b[a[i]] &gt; 1</code>），便令j前进直到抛出这个重复出现的数。优化的结果是时间复杂度从$O(n^2)$降低到$O(n)$，思路和成效可以管中窥豹。</p>
 <hr>
@@ -205,11 +202,9 @@
 <p>怎么实现的呢？简单一句话：<code>x &amp; -x</code>。</p>
 <p>C++里，负数是原数的补码，亦即取反加一。<code>x &amp; -x = x &amp; (~x + 1)</code>，于是：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">x               &#x3D; 1010 ... 100 ... 0</span><br><span class="line">~x              &#x3D; 0101 ... 011 ... 1</span><br><span class="line">~x + 1          &#x3D; 0101 ... 100 ... 0</span><br><span class="line">x &amp; (~x + 1)    &#x3D; 0000 ... 100 ... 0</span><br></pre></td></tr></table></figure>
-
 <p>应用：统计x中1的个数。</p>
 <p>十分简单的样板题<a href="https://www.acwing.com/problem/content/803/" target="_blank" rel="noopener">二进制中1的个数</a></p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span> + <span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> a[N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; n;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++ i ) &#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%d"</span>, &amp;a[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++ i ) &#123;</span><br><span class="line">        <span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (a[i]) &#123;</span><br><span class="line">            a[i] -= a[i] &amp; -a[i];</span><br><span class="line">            res ++ ;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%d "</span>, res);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>题解也十分简单粗暴，查出一个1就减掉对应的数（对二进制数来说，该1就被削成0了）直到削掉最后一个1，res就统计出了结果。</p>
 
       
@@ -483,6 +478,10 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">algorithm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">STL</a>
               </li>
              
@@ -491,11 +490,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">algorithm</a>
+                <a href="javascript:void(0)" class="js-tag color5">data_structure algorithm</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">data_structure algorithm</a>
+                <a href="javascript:void(0)" class="js-tag color5">math</a>
               </li>
             
             <div class="clearfix"></div>
@@ -652,5 +651,21 @@ MathJax.Hub.Queue(function() {
 
 </div>
   </div>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<!-- <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 </body>
 </html>

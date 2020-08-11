@@ -6,20 +6,23 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>data_structure_1 | Daniel_Elendeer&#39;s Blog</title>
+  <title>浅探概率论基本公式 | Daniel_Elendeer&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="这段时间噬月在进行数据结构和算法的复习和学习！ 这篇博客将包括链表、栈与队列，以及如何使用数组来模拟他们的内容。 我们也会提及单调栈和单调队列，并讨论他们的思想。">
+  <meta name="description" content="学习概率论过程中对公式的一点思考。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="data_structure_1">
-<meta property="og:url" content="http://yoursite.com/2020/07/18/data-structure-1/index.html">
+<meta property="og:title" content="浅探概率论基本公式">
+<meta property="og:url" content="http://yoursite.com/2020/08/11/%E6%B5%85%E6%8E%A2%E6%A6%82%E7%8E%87%E8%AE%BA%E5%9F%BA%E6%9C%AC%E5%85%AC%E5%BC%8F/index.html">
 <meta property="og:site_name" content="Daniel_Elendeer&#39;s Blog">
-<meta property="og:description" content="这段时间噬月在进行数据结构和算法的复习和学习！ 这篇博客将包括链表、栈与队列，以及如何使用数组来模拟他们的内容。 我们也会提及单调栈和单调队列，并讨论他们的思想。">
+<meta property="og:description" content="学习概率论过程中对公式的一点思考。">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2020-07-18T01:51:49.000Z">
-<meta property="article:modified_time" content="2020-07-29T03:50:19.232Z">
+<meta property="og:image" content="https://user-images.githubusercontent.com/61586472/89872541-af1e0880-dbeb-11ea-92c9-cc70835bfbe7.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/61586472/89872547-b0e7cc00-dbeb-11ea-993e-c88c63b8deea.png">
+<meta property="article:published_time" content="2020-08-11T02:38:26.000Z">
+<meta property="article:modified_time" content="2020-08-11T08:00:25.063Z">
 <meta property="article:author" content="Daniel_Elendeer">
-<meta property="article:tag" content="data_structure">
+<meta property="article:tag" content="math">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://user-images.githubusercontent.com/61586472/89872541-af1e0880-dbeb-11ea-92c9-cc70835bfbe7.png">
   
     <link rel="alternative" href="/atom.xml" title="Daniel_Elendeer&#39;s Blog" type="application/atom+xml">
   
@@ -151,70 +154,90 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-data-structure-1" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-浅探概率论基本公式" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      data_structure_1
+      浅探概率论基本公式
     </h1>
   
 
         
-        <a href="/2020/07/18/data-structure-1/" class="archive-article-date">
-  	<time datetime="2020-07-18T01:51:49.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-18</time>
+        <a href="/2020/08/11/%E6%B5%85%E6%8E%A2%E6%A6%82%E7%8E%87%E8%AE%BA%E5%9F%BA%E6%9C%AC%E5%85%AC%E5%BC%8F/" class="archive-article-date">
+  	<time datetime="2020-08-11T02:38:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-08-11</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>这段时间噬月在进行数据结构和算法的复习和学习！</p>
-<p>这篇博客将包括链表、栈与队列，以及如何使用数组来模拟他们的内容。</p>
-<p>我们也会提及单调栈和单调队列，并讨论他们的思想。</p>
+        <p>学习概率论过程中对公式的一点思考。</p>
 <a id="more"></a>
-<p>本篇算法模板来自AcWing的y总。</p>
-<h2 id="总览"><a href="#总览" class="headerlink" title="总览"></a>总览</h2><p>以下是本篇内容：</p>
+<p><em>在此不对概率论的基础概念一一阐述，而只讨论对部分知识的思考。</em></p>
+<p>概率论与集合论是有密切联系的，因此接下来提及的许多公式可以使用$ven$图来辅助理解。不过这里先针对一些概率论中事件的基础表示法加以辨析，以避免混淆，并讨论相应的内容分在集合论中的内涵。</p>
+<ul>
+<li>$AB$表示事件$A$与事件$B$都发生，可视为取集合交集，即$A \cap B$。</li>
+<li>$A + B$ 表示将事件$A$与事件$B$当作一个事件看待，即事件$A$或$B$任意一个发生都视为本事件（即$A + B$事件）发生，可视为集合病机，即$A \cup B$。</li>
+<li>$A - B$ 表示事件$A$发生的同时事件$B$不发生，从集合的角度看，则是集合$A$与$B$可能有交集，而我们取只属于$A$的部分。</li>
+<li>$\bar A$表示$A$事件的对立事件，对于集合来说可视为取补集。</li>
+</ul>
+<p>有了这些基本的了解，接下来罗列一些概率论的基本公式：</p>
 <ol>
-<li>链表和邻接表</li>
-<li>栈与队列</li>
-</ol>
-<h2 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h2><p>链表是线性表的一种，顾名思义，它是一条链，不同的节点之间由指针连接。在实现上可能会有首元是否为空的差异，不过那不是本篇博客讨论的重点。</p>
-<p>可以使用结构体和指针来实现链表，这种<strong>动态链表</strong>一半在面试时比较常见，但笔试或写算法题一般不会使用这种写法——因为每次通过指针创建新节点的操作太慢了。接下来主要讨论使用数组来模拟链表，这种方法实现的链表也称为<strong>静态链表</strong>。</p>
-<h3 id="单链表"><a href="#单链表" class="headerlink" title="单链表"></a>单链表</h3><p>单链表一般用来写邻接表，而邻接表一般用来存树和图。</p>
-<p>如何使用数组来模拟链表？我们可以考虑通过数组下标建立联系，开多个数组来表示链表节点的不同成员。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// head存储链表头，e[]存储节点的值，ne[]存储节点的next指针，idx表示当前用到了哪个节点</span></span><br><span class="line"><span class="keyword">int</span> head, e[N], ne[N], idx;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 初始化</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    head = <span class="number">-1</span>;</span><br><span class="line">    idx = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在链表头插入一个数a</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(<span class="keyword">int</span> a)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    e[idx] = a, ne[idx] = head, head = idx ++ ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 将头结点删除，需要保证头结点存在</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">remove</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    head = ne[head];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><em>注：静态链表体现出的思想是使用数组来模拟堆内存，从而省去动态内存申请的耗时过程，而<code>idx</code>正可以看作这样一个“堆内存指针”，它指示了我们用来模拟堆内存的数组究竟消耗了多少。<code>idx</code>从 <code>0</code> 到<code>N - 1</code>，这些<code>idx</code>指过的数字可以理解成“内存地址”，因为从链表的形式来看，这些数字确实在模拟中充当了这样的角色。</em></p>
-<h3 id="双链表"><a href="#双链表" class="headerlink" title="双链表"></a>双链表</h3><p>双链表一般用来优化某些问题。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// e[]表示节点的值，l[]表示节点的左指针，r[]表示节点的右指针，idx表示当前用到了哪个节点</span></span><br><span class="line"><span class="keyword">int</span> e[N], l[N], r[N], idx;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 初始化</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//0是左端点，1是右端点</span></span><br><span class="line">    r[<span class="number">0</span>] = <span class="number">1</span>, l[<span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">    idx = <span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在节点a的右边插入一个数x</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    e[idx] = x;</span><br><span class="line">    l[idx] = a, r[idx] = r[a];</span><br><span class="line">    l[r[a]] = idx, r[a] = idx ++ ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 删除节点a</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">remove</span><span class="params">(<span class="keyword">int</span> a)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    l[r[a]] = l[a];</span><br><span class="line">    r[l[a]] = r[a];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>使用数组模拟的静态链表最大的优势就是快，因为它不需要创建和销毁对象的过程（如果你使用C++的话，<code>struct</code>依然是具有默认构造和析构函数的），并且代码更加简洁。缺点是数据的上限和内存的利用率——但我们写算法题时关心的是如何在一秒内跑完题目，内存泄漏（尽管很糟糕）却不属于解题时我们需要关心的事情。但写工程时应该多加留心。<code>using namespace std;</code>写在开头的这种“恶劣行径”也是同样的道理。</p>
+<li>对立事件概率公式<script type="math/tex; mode=display">P(A) = 1 - P(\bar A)</script> 对立事件公式应该是所有公式里最容易理解的一个，因此不再赘述其内涵。需要注意的是，对立事件公式与其视为公式，不如视为一种思考方式，这可以对我们解决各类问题都有所启发。</li>
+<li>减法公式<script type="math/tex; mode=display">P(A \bar B) = P(A - B) = P(A) - P(AB)</script> 实际上，只要联系了集合概念，减法公式可以通过$ven$图轻松理解。我们可以看下图：<br> <img src="https://user-images.githubusercontent.com/61586472/89872541-af1e0880-dbeb-11ea-92c9-cc70835bfbe7.png" alt="ven_01"><br> 我们实际上正是在求阴影部分概率，结合几何概型不难得出减法公式。</li>
+<li>加法公式<script type="math/tex; mode=display">P(A + B) = P(A) + P(B) - P(AB)</script> 也许一开始我们会疑惑为什么最后还需要减去一项，而联系集合论就不难发现，这是容斥原理——简单地将，交集被加了两次，因此要减回来。</li>
+<li><p>条件概率公式/除法公式</p>
+<script type="math/tex; mode=display">P(A|B) = \frac{P(AB)}{P(B)}</script><p> 条件概率公式是挺有意思的公式，同样可以结合文氏图来理解：<br> <img src="https://user-images.githubusercontent.com/61586472/89872547-b0e7cc00-dbeb-11ea-993e-c88c63b8deea.png" alt="ven_02"><br> $P(A|B)$指的是<em>在$B$发生的情况下$A$发生的概率</em>。从结果上看，$A$与$B$都要发生，那么从图中看就是两个集合的交集部分。而为什么要除以一个$P(B)$呢？这里我建议结合几何概型来理解:</p>
+<blockquote>
+<p>若$\Omega$是一个可度量的几何区域，且样本点落入$\Omega$中的某一可度量子区域$A$的概率与$A$的几何度量成正比，而与$A$的位置形状无关，则称这样的概率模型为<strong>几何概型</strong>。</p>
+</blockquote>
+<p> 站在这个角度，我们可以把集合理解为几何区域，$P(B)$理解为区域$B$的面积，而$P(AB)$则是上图阴影部分的面积，这时候根据条件概率的描述——<em>在$B$发生的情况下$A$发生的概率</em>，就可以理解为<em>区域$A$的面积占区域$B$的面积的百分比</em>，公式的含义就十分明了了。</p>
+<p> 甚至，我们可以对条件概率公式中的思考方式加以推广：当我们讨论某个事件$A$的概率$P(A)$时，我们总是要有一个样本空间的。我们的前提就是样本点必定取在样本空间内，换言之，将事件“样本点取在样本空间内”记为事件$B$，$P(B) = 1$。我们讨论的$P(A)$则可视为$P(A|B)$，展开后根据条件概率公式和独立事件概率计算方法带入计算，依然可以化简为$P(A)$——这并不是多此一举，而是包括了样本空间（或，集合论中对应称全集）的更一般的理解。有了这样的理解，我们就可以允许样本空间扩张或收缩，并利用条件概率的思想计算出某个事件在新样本空间下的新概率。</p>
+</li>
+<li><p>乘法公式</p>
+<script type="math/tex; mode=display">
+ P(AB) = \begin{cases}
+ P(A)P(B|A),&P(A) > 0\\
+ P(B)P(A|B),&P(B) > 0
+ \end{cases}</script><p> 我们不难发现，乘法公式就是条件概率公式的变形——而乘法具有交换律，因此可以有两个形式。</p>
 <hr>
-<h2 id="栈与队列"><a href="#栈与队列" class="headerlink" title="栈与队列"></a>栈与队列</h2><p>栈与队列都是老熟人了，十分简单。栈是一个先进后出的桶，队列则是一个先进先出的管子。</p>
-<h3 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// tt表示栈顶</span></span><br><span class="line"><span class="keyword">int</span> stk[N], tt = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 向栈顶插入一个数</span></span><br><span class="line">stk[ ++ tt] = x;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 从栈顶弹出一个数</span></span><br><span class="line">tt -- ;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 栈顶的值</span></span><br><span class="line">stk[tt];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 判断栈是否为空</span></span><br><span class="line"><span class="keyword">if</span> (tt &gt; <span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="单调栈"><a href="#单调栈" class="headerlink" title="单调栈"></a>单调栈</h4><p>这里插播一个比较神奇的题：<a href="https://www.acwing.com/problem/content/832/" target="_blank" rel="noopener">单调栈</a>（说它神奇当然是因为我见识少了qwq</p>
-<p>这个题有一个很容易想到的暴力解法，即二重<code>for</code>循环，第一重遍历数列的所有元素，第二重从该元素起，往前搜寻比小的第一个元素并且输出，找不到就输出1。这个解法颇有点双指针算法的既视感，然而这个暴力解法最差的情况是$O(n^2)$。</p>
-<p>与双指针算法类似的，我们的思路是观察一下这个暴力解法中有没有蕴含着某种单调性。而很容易观察出来的一点是：<br>假如有两个相邻的数$a, b$且$a \gt b$，那么在$b$之后遍历到的数中，$a$明显永远不会被当成答案输出，因为根据题意，$b$总是更优的。</p>
-<p>于是我们可以使用一个栈来存储遍历到的数，并在遇到以上的情况时，不断地从栈里取数，直到栈顶元素小于当前遍历到的数，这就找到了当前数的解——然后我们再将当前数压栈。用这样的方法，我们将得到一个<strong>单调栈</strong>，即<em>栈内的元素是具有单调性的</em>，在本题的体现就是栈内的元素总是从小到大的。</p>
-<p>以下是代码实现，可以看到十分的简洁：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span> + <span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> stk[N], tt = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; n;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++ i) &#123;</span><br><span class="line">        <span class="keyword">int</span> x;</span><br><span class="line">        <span class="built_in">cin</span> &gt;&gt; x;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (tt &amp;&amp; stk[tt] &gt;= x) tt -- ;</span><br><span class="line">        <span class="keyword">if</span> (tt) <span class="built_in">cout</span> &lt;&lt; stk[tt] &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">        <span class="keyword">else</span> <span class="built_in">cout</span> &lt;&lt; <span class="string">"-1 "</span>;</span><br><span class="line"></span><br><span class="line">        stk[ ++ tt] = x;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>单调栈的适用题型也基本就是上述类似问法的题型了。可以提取出核心部分的模板如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 常见模型：找出每个数左边离它最近的比它大/小的数</span></span><br><span class="line"><span class="keyword">int</span> tt = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i ++ ) &#123;</span><br><span class="line">    <span class="keyword">while</span> (tt &amp;&amp; check(stk[tt], i)) tt -- ;</span><br><span class="line">    stk[ ++ tt] = i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>我想，如果有一个场景，在遍历数据的时候就已经可以对解按照优先级排序，那么单调栈就可以用来解这个题，但我一时还没想到什么其他的好例子。</p>
-<h3 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h3><p>普通队列</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// hh 表示队头，tt表示队尾</span></span><br><span class="line"><span class="keyword">int</span> q[N], hh = <span class="number">0</span>, tt = <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 向队尾插入一个数</span></span><br><span class="line">q[ ++ tt] = x;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 从队头弹出一个数</span></span><br><span class="line">hh ++ ;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 队头的值</span></span><br><span class="line">q[hh];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 判断队列是否为空</span></span><br><span class="line"><span class="keyword">if</span> (hh &lt;= tt)</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>循环队列</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// hh 表示队头，tt表示队尾的后一个位置</span></span><br><span class="line"><span class="keyword">int</span> q[N], hh = <span class="number">0</span>, tt = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 向队尾插入一个数</span></span><br><span class="line">q[tt ++ ] = x;</span><br><span class="line"><span class="keyword">if</span> (tt == N) tt = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 从队头弹出一个数</span></span><br><span class="line">hh ++ ;</span><br><span class="line"><span class="keyword">if</span> (hh == N) hh = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 队头的值</span></span><br><span class="line">q[hh];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 判断队列是否为空</span></span><br><span class="line"><span class="keyword">if</span> (hh != tt)</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="单调队列"><a href="#单调队列" class="headerlink" title="单调队列"></a>单调队列</h4><p>考虑这样一个问题：有一个给定大小的数组，又有一个给定大小的窗口，窗口从数组的左边移动到右边，每次移动一个位置。我们的任务是每次输出窗口内元素的最大值和最小值。AcWing上有<a href="https://www.acwing.com/problem/content/156/" target="_blank" rel="noopener">一样的例题</a>。</p>
-<p>这个问题是能用单调队列解决的经典问题。</p>
-<p>我们<strong>先考虑如何求最小值</strong>。对于每个窗口来说，假如窗口内有元素$a, b$且$a$位于$b$的左边并$a \gt b$，因为$a$的值更大，并且会更快随着窗口的滑动而消失，那么<strong>当</strong> $b$ <strong>被包含在窗口内以后</strong>，$a$就永远没有机会作为答案输出。对于这样的情况，我们就可以把$a$干掉。</p>
-<p>考虑这样的操作：窗口滑动可以使用一个队列来维护，队列中存放窗口中元素的下标，每次窗口移动时，新的下标加入到队尾，最旧的下标从队头弹出。现在我们<strong>针对求最小值</strong>做如下优化：每一次插入新的下标时，对比欲插入的下标对应的数和队尾元素对应的数的大小，当队列不为空且队尾元素对应的数比欲插入下标对应的数更大时，令队列尾指针减一，直到队列为空或队尾元素对应数小于欲插入的下标对应的数。经过这样的操作，我们将得到一个<strong>单调队列</strong>，即队列内元素所对应的值单调递增，这个队列已经排除了上述所有以后不可能作为答案输出的$a$，而我们要找出当前窗口内的最小值，只需要找到队头元素下标所对应的数即可。</p>
-<p>求最大值则是完全对称的操作。</p>
-<p>代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e6</span> + <span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> q[N], a[N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n, k;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; n &gt;&gt; k;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++ i ) &#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%d"</span>, &amp;a[i]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> hh = <span class="number">0</span>, tt = <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++ i ) &#123;</span><br><span class="line">        <span class="comment">// 判断队尾的下标是否在滑动窗口内</span></span><br><span class="line">        <span class="comment">// 因为while会干掉一部分下标，因此不能每次都无脑自增</span></span><br><span class="line">        <span class="keyword">if</span> (hh &lt;= tt &amp;&amp; q[hh] &lt; i - k + <span class="number">1</span>) hh ++ ;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (hh &lt;= tt &amp;&amp; a[q[tt]] &gt;= a[i]) tt -- ;</span><br><span class="line">        q[ ++ tt ] = i;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (i &gt;= k - <span class="number">1</span>) <span class="built_in">printf</span>(<span class="string">"%d "</span>, a[q[hh]]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    hh = <span class="number">0</span>, tt = <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++ i ) &#123;</span><br><span class="line">        <span class="keyword">if</span> (hh &lt;= tt &amp;&amp; q[hh] &lt; i - k + <span class="number">1</span>) hh ++ ;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (hh &lt;= tt &amp;&amp; a[q[tt]] &lt;= a[i]) tt -- ;</span><br><span class="line">        q[ ++ tt ] = i;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (i &gt;= k - <span class="number">1</span>) <span class="built_in">printf</span>(<span class="string">"%d "</span>, a[q[hh]]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>我们可以总结一下单调队列和单调栈的共同思路：先写出朴素算法（暴搜），然后观察这个朴素算法中，是否会有无用元素进入栈或队列之中，并根据逻辑删除这些元素，观察栈或队列是否有单调性，若有，我们就可以做出优化。对于有单调性的队列或栈，找最值和找某个元素都是比较方便的，前者直接寻找端点，后者可以使用二分。</p>
-<p>同时，这种思路和双指针算法也有一点类似。</p>
+<p> 接下来的两个公式不同于上面五个，下面的两个用于处理分阶段的事件。</p>
+</li>
+<li><p>全集分解公式/全概公式</p>
+<script type="math/tex; mode=display">P(B) = \sum_{i = 1}^n P(A_i)P(B|A_i)</script><p> 引例：一个村子内有且仅有三个小偷$1, 2, 3$，他们偷窃得手的概率分别是$A_1, A_2, A_3$，三选一去偷窃，求村子失窃的概率。</p>
+<p> 我们首先记$B = \{失窃\}$。可见，这个例子比较复杂，因为村子是否失窃，不仅与谁去偷有关系，也与该选手的偷窃能力有关系。整个事情分为两个阶段：</p>
+<ol>
+<li>选人</li>
+<li><p>偷窃</p>
+<p>这时我们欲求$P(B)$需要如何做呢？</p>
+<p>先插播一则概念：</p>
+<blockquote>
+<p>任意给出事件$A_1, A_2, …, A_n$，若：</p>
+<script type="math/tex; mode=display">
+\begin{cases}A_1 \cup A_2 \cup ... \cup A_n\\
+A_iA_j = \emptyset, i \not = j
+\end{cases}</script><p>则称这一组事件构成<strong>完备事件组</strong>。</p>
+</blockquote>
+<p>我们不难发现，选人阶段，若将分别选中三人看作三个事件，那么这三个事件构成完备事件组。而要实施偷窃，人是必须选出来的，也就是“有一个人被选出来”这个事件必定会发生。这样看来，我们要求的$P(B)$实际上是$P(B\Omega)$，其中的$\Omega$指该必然事件。于是我们可以将$1, 2, 3$被选中事件分别记为$A_1, A_2, A_3$，并按照如下推导：</p>
+<script type="math/tex; mode=display">
+\begin{aligned}P(B) &= P(B\Omega)\\
+&= P(B(A_1 \cup A_2 \cup A_3))\\
+&=P(BA_1 \cup BA_2 \cup BA_3)\\
+&=P(BA_1) + P(BA_2) + P(BA_3)\\
+&= P(A_1)P(B|A_1) + P(A_2)P(B|A_2) + P(A_3)P(B|A_3)
+\end{aligned}</script><p>故，</p>
+<script type="math/tex; mode=display">
+P(B) = \sum_{i = 1}^n P(A_i)P(B|A_i)</script></li>
+</ol>
+</li>
+<li><p>贝叶斯公式/逆概公式</p>
+<script type="math/tex; mode=display">
+ P(A_j|B) = \frac{P(A_jB)}{P(B)} = \frac{P(A_j)P(B|A_j)}{\sum_{i = 1}^nP(A_i)P(B|A_j)}</script><p> 逆概公式的思想是“执果索因”——亦即是问：现在村子失窃了，那么是谁偷的？这同样是涉及两个阶段的过程，较为复杂。而逆概公式借助条件概率的表述，可以将算式写作上式中间的形式，又借助我们推导过的全概公式和乘法公式，就可以轻松得出概率计算式了。</p>
+</li>
+</ol>
 
       
 
@@ -259,7 +282,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">data_structure</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">math</a>
         		</li>
       		
 		</ul>
@@ -315,7 +338,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2020/07/18/data-structure-1/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2020/08/11/%E6%B5%85%E6%8E%A2%E6%A6%82%E7%8E%87%E8%AE%BA%E5%9F%BA%E6%9C%AC%E5%85%AC%E5%BC%8F/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -329,18 +352,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2020/07/21/KMP/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          KMP
-        
-      </div>
-    </a>
   
-  
-    <a href="/2020/07/16/discretization-interval-merge/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">discretization&amp;interval_merge</div>
+    <a href="/2020/08/09/STL/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">STL</div>
       <i class="icon-circle-right"></i>
     </a>
   
