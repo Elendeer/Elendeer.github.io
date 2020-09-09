@@ -18,7 +18,7 @@
 <meta property="og:image" content="https://user-images.githubusercontent.com/61586472/89872541-af1e0880-dbeb-11ea-92c9-cc70835bfbe7.png">
 <meta property="og:image" content="https://user-images.githubusercontent.com/61586472/89872547-b0e7cc00-dbeb-11ea-993e-c88c63b8deea.png">
 <meta property="article:published_time" content="2020-08-11T02:38:26.000Z">
-<meta property="article:modified_time" content="2020-08-11T08:00:25.063Z">
+<meta property="article:modified_time" content="2020-09-03T03:35:20.981Z">
 <meta property="article:author" content="Daniel_Elendeer">
 <meta property="article:tag" content="math">
 <meta name="twitter:card" content="summary">
@@ -180,7 +180,7 @@
 <p>概率论与集合论是有密切联系的，因此接下来提及的许多公式可以使用$ven$图来辅助理解。不过这里先针对一些概率论中事件的基础表示法加以辨析，以避免混淆，并讨论相应的内容分在集合论中的内涵。</p>
 <ul>
 <li>$AB$表示事件$A$与事件$B$都发生，可视为取集合交集，即$A \cap B$。</li>
-<li>$A + B$ 表示将事件$A$与事件$B$当作一个事件看待，即事件$A$或$B$任意一个发生都视为本事件（即$A + B$事件）发生，可视为集合病机，即$A \cup B$。</li>
+<li>$A + B$ 表示将事件$A$与事件$B$当作一个事件看待，即事件$A$或$B$任意一个发生都视为本事件（即$A + B$事件）发生，可视为集合并集，即$A \cup B$。</li>
 <li>$A - B$ 表示事件$A$发生的同时事件$B$不发生，从集合的角度看，则是集合$A$与$B$可能有交集，而我们取只属于$A$的部分。</li>
 <li>$\bar A$表示$A$事件的对立事件，对于集合来说可视为取补集。</li>
 </ul>
@@ -217,7 +217,7 @@
 <blockquote>
 <p>任意给出事件$A_1, A_2, …, A_n$，若：</p>
 <script type="math/tex; mode=display">
-\begin{cases}A_1 \cup A_2 \cup ... \cup A_n\\
+\begin{cases}A_1 \cup A_2 \cup ... \cup A_n = \Omega\\
 A_iA_j = \emptyset, i \not = j
 \end{cases}</script><p>则称这一组事件构成<strong>完备事件组</strong>。</p>
 </blockquote>
@@ -351,6 +351,15 @@ P(B) = \sum_{i = 1}^n P(A_i)P(B|A_i)</script></li>
 
   
 <nav id="article-nav">
+  
+    <a href="/2020/08/15/DFS-BFS/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          DFS&amp;BFS
+        
+      </div>
+    </a>
   
   
     <a href="/2020/08/09/STL/" id="article-nav-older" class="article-nav-link-wrap">
@@ -505,7 +514,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">STL</a>
+                <a href="javascript:void(0)" class="js-tag color5">data_structure algorithm</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -513,11 +522,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">data_structure algorithm</a>
+                <a href="javascript:void(0)" class="js-tag color4">STL</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">math</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">杂项</a>
               </li>
             
             <div class="clearfix"></div>
@@ -674,21 +687,5 @@ MathJax.Hub.Queue(function() {
 
 </div>
   </div>
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        tex2jax: {
-            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
-            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
-            processEscapes: true
-        }
-    });
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax();
-        for (var i = 0; i < all.length; ++i)
-            all[i].SourceElement().parentNode.className += ' has-jax';
-    });
-</script>
-<!-- <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 </body>
 </html>
